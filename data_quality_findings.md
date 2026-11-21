@@ -9,7 +9,7 @@
 | Database | Google BigQuery |
 | Table Name | `flights` |
 | Total Records | To be updated |
-| Total Columns | 39 |
+| Total Columns | 40 |
 | Date Range | To be updated |
 | Total Airlines | To be updated |
 
