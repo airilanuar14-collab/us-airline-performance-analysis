@@ -8,10 +8,10 @@
 | Source | Kaggle – US Flight Delays 2025 (BTS On-Time Performance) |
 | Database | Google BigQuery |
 | Table Name | `flights` |
-| Total Records | To be updated |
+| Total Records | 7,001,619 |
 | Total Columns | 40 |
-| Date Range | To be updated |
-| Total Airlines | To be updated |
+| Date Range | 1st January 2025 - 31st December 2025 |
+| Total Airlines | 14 |
 
 ## 2. Data Quality Checks
 
@@ -21,17 +21,32 @@
 Understand the dataset structure, number of records, available columns and date coverage.
 
 **Findings:**
-- Total records: To be updated
-- Total columns: 39
-- Date range: To be updated
-- Number of airlines: To be updated
-- Monthly record distribution: To be updated
+- Total records: 7,001,619
+- Total columns: 40
+- Date range: 1st January 2025 - 31st December 2025
+- Number of airlines: 14
+- Monthly record distribution:
+  
+| Month | Total flights |
+|---|---|
+| 1 | 539,747 |
+| 2 | 504,884 |
+| 3 | 600,872 |
+| 4 | 583,950 |
+| 5 | 605,648 |
+| 6 | 611,575 |
+| 7 | 631,428 |
+| 8 | 602,378 |
+| 9 | 562,439 |
+| 10 | 605,844 |
+| 11 | 570,550 |
+| 12 | 582,304 |
 
 **Action Taken:**
-- Reviewed the dataset schema and data types.
-- Verified the date range and monthly data coverage.
-
-**Status:** Pending
+- Reviewed the dataset schema and verified the data types of all 40 columns.
+- Confirmed that the dataset covers the full 2025 calendar year (January–December).
+- Verified that all 12 months contain flight records.
+- Identified monthly variations in flight record volumes for further analysis.
 
 ---
 
@@ -44,18 +59,22 @@ Identify missing values in important columns that may affect the analysis.
 
 | Column | Missing Records | Observation |
 |---|---:|---|
-| FlightDate | To be updated | To be updated |
-| Reporting_Airline | To be updated | To be updated |
-| DepDelay | To be updated | To be updated |
-| ArrDelay | To be updated | To be updated |
-| Cancelled | To be updated | To be updated |
-| Diverted | To be updated | To be updated |
-| CancellationCode | To be updated | To be updated |
+| FlightDate | 0 | No missing values. Flight date information is complete. |
+| Reporting_Airline | 0 | No missing values. Airline identification is complete.|
+| DepDelay | 98,591 | Missing values occur exclusively in cancelled flights. These values are likely related to flights that did not operate. |
+| ArrDelay | 122,135 | 	Missing values are associated with cancelled and diverted flights. One additional normal flight record was identified with missing actual arrival information, requiring further investigation. |
+| Cancelled | 0 | No missing values. Flight cancellation status is available for all records. |
+| Diverted | 0 | No missing values. Flight diversion status is available for all records. |
+| CancellationCode | 6,898,743 | All missing values correspond to flights that were not cancelled. These NULL values are expected and do not indicate a data quality issue. |
 
 **Action Taken:**
-- Investigated missing values based on their business context.
-- Distinguished expected NULL values from potential data quality issues.
-- Avoided removing records without sufficient justification.
+- Identified missing departure and arrival delay values by flight status.
+- Confirmed that all missing `ArrDelay` values among cancelled and diverted flights are associated with their operational status.
+- Investigated one normal flight record with missing arrival information:
+  - Identified that actual arrival time, arrival delay and related flight duration fields were unavailable.
+  - Retained the original record and excluded missing arrival delay values from calculations requiring valid arrival outcomes.
+- Confirmed that missing `CancellationCode` values correspond to non-cancelled flights.
+- Retained expected NULL values without replacing them with zero.
 
 **Status:** Pending
 
