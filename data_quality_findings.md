@@ -25,6 +25,10 @@ Understand the dataset structure, number of records, available columns and date 
 - Total columns: 40
 - Date range: 1st January 2025 - 31st December 2025
 - Number of airlines: 14
+- Monthly record counts account for the full dataset of 7,001,619 flights.
+- Verified that all 12 months contain flight records.
+- Monthly flight volumes range from 504,884 to 631,428 records.
+- July recorded the highest flight volume, while February recorded the lowest.
 - Monthly record distribution:
   
 | Month | Total flights |
@@ -145,6 +149,11 @@ Check whether important values fall within expected ranges and follow the datase
   - All 10 cancelled or diverted records had missing actual arrival times.
   - The extreme delay values require further investigation to determine whether they represent genuine operational disruptions or potential timestamp inconsistencies.
 
+**6. Delay Cause Validation**
+  - No negative values were identified in the five delay cause columns.
+  - All non-NULL delay cause values were zero or positive.
+  - No data modification was required based on this check.
+
 **Action Taken:**
 - Verified the flight date range against the expected 2025 reporting period.
 - Reviewed airline codes and identified 14 unique airlines.
@@ -153,6 +162,9 @@ Check whether important values fall within expected ranges and follow the datase
 - Identified and investigated records with departure or arrival delays exceeding 24 hours.
 - Compared extreme delay records across airlines and examined their relationship with cancellation and diversion status.
 - Flagged extreme delay records for further validation. No records were removed or modified at this stage.
+- Checked all five delay cause columns for negative values.
+- Confirmed that no negative values were detected in the available delay cause data.
+- Retained the original values without modification, as no data validity issues were identified through this check.
 
 **Status:** Pending Further Investigation
 
@@ -161,20 +173,44 @@ Check whether important values fall within expected ranges and follow the datase
 ### 2.5 Data Consistency
 
 **Objective:**  
-Verify consistency between related columns, particularly flight status, cancellation codes and delay indicators.
+To identify discrepancies between related columns and verify whether records follow the expected business rules.
 
 **Findings:**
-- Flights marked as both cancelled and diverted: To be updated
-- Cancellation code distribution: To be updated
-- Inconsistent arrival delay indicators: To be updated
-- Inconsistent departure delay indicators: To be updated
+
+**1. Cancellation vs Diversion Status**
+  - Total records checked: 7,001,619.
+  - No records were found with both Cancelled = 1 and Diverted = 1.
+  - Cancellation and diversion statuses showed no overlapping records.
+
+**2. Cancelled Flights with Arrival Delay**
+  - No cancelled flights were found with non-NULL arrival delay values.
+  - All cancelled flight records had NULL values in ArrDelay.
+  - This is consistent with the expected business rule.
+
+**3. Delay Cause Consistency**
+  - Records with at least one positive delay cause value: 1,534,624.
+  - Flights with arrival delays of 15 minutes or more: 1,534,638.
+  - A difference of 14 records was identified.
+  - Further investigation found that all 14 records were delayed flights without any positive values in the five delay cause columns.
+  - No records were found with positive delay cause values but without an arrival delay of at least 15 minutes.
+
+**4. Flight Status Validation**
+  - Flight status classification identified 5 categories: On Time, Delayed, Cancelled, Diverted and Unknown.
+  - One record was classified as Unknown due to missing arrival delay information.
+  - The record was previously identified as a non-cancelled, non-diverted flight with incomplete arrival information.
+  - No changes were made to the original record.
 
 **Action Taken:**
-- Compared delay values against the 15-minute delay indicators.
-- Investigated inconsistencies between related columns.
-- Reviewed cancellation and diversion records.
+- Compared cancellation and diversion statuses to identify overlapping records.
+- Verified that cancelled flights did not have recorded arrival delays.
+- Compared recorded delay causes against flights classified as delayed based on arrival delay.
+- Identified 14 delayed flights without recorded positive delay cause values.
+- Flagged these 14 records for further investigation. No records were removed or modified.
+- Classified flight records into five categories: On Time, Delayed, Cancelled, Diverted and Unknown.
+- Investigated the single record classified as Unknown and identified missing arrival information.
+- Retained the original record without assigning an estimated flight status or modifying its values.
 
-**Status:** Pending
+**Status:** Pending Further Investigation
 
 ---
 
@@ -182,11 +218,11 @@ Verify consistency between related columns, particularly flight status, cancella
 
 | Quality Check | Key Finding | Action Required |
 |---|---|---|
-| Dataset Structure | To be updated | To be updated |
-| Missing Values | To be updated | To be updated |
-| Duplicate Records | To be updated | To be updated |
-| Data Validity | To be updated | To be updated |
-| Data Consistency | To be updated | To be updated |
+| Dataset Structure | The dataset contains 7,001,619 flight records across 40 columns, covering all 12 months of 2025 and 14 airlines. | No structural issues identified. Dataset structure and monthly coverage are considered adequate for further analysis. |
+| Missing Values | Missing values were mainly found in DepDelay, ArrDelay and CancellationCode. Most missing delay values were associated with cancelled or diverted flights. One additional non-cancelled, non-diverted flight was found with incomplete arrival information. | Retain expected NULL values for cancelled and diverted flights. Exclude records without valid arrival outcomes from relevant delay and on-time performance calculations. Investigate the single incomplete arrival record further. |
+| Duplicate Records | No duplicate groups were detected based on the selected combination of flight date, airline, flight number, origin, destination and scheduled departure time. | No duplicate removal required based on the composite-key check performed. |
+| Data Validity | Flight dates fall within the 2025 reporting period. Negative departure and arrival delays are valid early operations. No negative values were found in the five delay cause columns. However, 665 records contain departure or arrival delays exceeding 24 hours and require further verification. | Retain valid negative delay values. Flag extreme delays for further investigation and avoid removing or modifying them without additional evidence. |
+| Data Consistency | No flights were simultaneously marked as cancelled and diverted. No cancelled flights had an arrival delay recorded. Flight status classification identified one Unknown record due to missing arrival information. Additionally, 14 delayed flights had no positive value recorded across the five delay cause columns. | Retain the original records. Investigate the one Unknown record and the 14 delayed flights without positive recorded delay causes. |
 
 ## 4. Data Cleaning Decisions
 
