@@ -224,20 +224,25 @@ To identify discrepancies between related columns and verify whether records fol
 | Data Validity | Flight dates fall within the 2025 reporting period. Negative departure and arrival delays are valid early operations. No negative values were found in the five delay cause columns. However, 665 records contain departure or arrival delays exceeding 24 hours and require further verification. | Retain valid negative delay values. Flag extreme delays for further investigation and avoid removing or modifying them without additional evidence. |
 | Data Consistency | No flights were simultaneously marked as cancelled and diverted. No cancelled flights had an arrival delay recorded. Flight status classification identified one Unknown record due to missing arrival information. Additionally, 14 delayed flights had no positive value recorded across the five delay cause columns. | Retain the original records. Investigate the one Unknown record and the 14 delayed flights without positive recorded delay causes. |
 
+---
+
 ## 4. Data Cleaning Decisions
 
-| Issue | Decision | Reason |
-|---|---|---|
-| Missing values | To be updated | Based on business context |
-| Potential duplicates | To be updated | Investigate before removal |
-| Negative delay values | Retain | Represents early departures or arrivals |
-| Extreme delay values | To be updated | Investigate before treatment |
-| Inconsistent records | To be updated | Validate against related columns |
+The following decisions were established based on the data quality assessment findings.
+
+| **Issue** | **Decision** | **Reason** |
+| --------------------- | ------------- | --------------------------------------- |
+| Missing values | Retain expected NULL values; exclude records without valid arrival outcomes from relevant calculations. | Missing delay values are mainly associated with cancelled and diverted flights. One additional record has incomplete arrival information. |
+| Potential duplicates | No removal required based on the composite-key check. | No duplicate groups were detected using the selected combination of flight date, airline, flight number, origin, destination and scheduled departure time. |
+| Negative delay values | Retain | Negative values represent early departures or arrivals and are valid operational records. |
+| Extreme delay values | Retain and flag for further investigation. | Records with delays exceeding 24 hours may represent genuine operational disruptions or potential timestamp issues. Further validation is required before treatment. |
+| Inconsistent records | Retain and flag records requiring further investigation. | One Unknown flight status record and 14 delayed flights without positive recorded delay causes were identified. These records should not be modified without further evidence. |
+| Delay cause values | Retain | No negative values were detected in the five delay cause columns. NULL values require separate consideration based on business context. |
+
+---
 
 ## 5. Conclusion
 
 The data quality assessment was conducted to evaluate the completeness, validity and consistency of the US Flight Delays 2025 dataset before proceeding with further analysis.
 
 The findings from these checks will guide the data cleaning process and help ensure that subsequent SQL analysis and Power BI visualizations are based on reliable data.
-
-**Project Status:** In Progress
