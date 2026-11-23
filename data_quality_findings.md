@@ -86,14 +86,13 @@ Identify missing values in important columns that may affect the analysis.
 Identify potential duplicate flight records using a combination of flight date, airline, flight number, origin, destination and scheduled departure time.
 
 **Findings:**
-- Potential duplicate groups: To be updated
-- Records involved: To be updated
+- No duplicate records were detected based on the selected combination of six columns.
+- The query returned no results, indicating that no repeated combinations were found.
 
 **Action Taken:**
-- Investigated potential duplicates before deciding whether any records required removal.
-- Retained records unless confirmed to be duplicate entries.
-
-**Status:** Pending
+- Performed duplicate checks using a composite key consisting of flight date, airline, flight number, origin, destination and scheduled departure time.
+- Confirmed that no duplicate groups were identified.
+- No duplicate removal was required based on this check.
 
 ---
 
@@ -103,18 +102,59 @@ Identify potential duplicate flight records using a combination of flight date, 
 Check whether important values fall within expected ranges and follow the dataset's business rules.
 
 **Findings:**
-- Invalid year or month values: To be updated
-- Unexpected cancellation/diversion flag values: To be updated
-- Negative departure delays: To be updated
-- Negative arrival delays: To be updated
-- Departure delays exceeding 24 hours: To be updated
-- Arrival delays exceeding 24 hours: To be updated
+
+**1. Flight Date Validation**
+  - Earliest flight date: 1 January 2025.
+  - Latest flight date: 31 December 2025.
+  - No records were found outside the expected reporting period.
+  - Total invalid dates: 0.
+
+**2. Airline Code Validity**
+  - Identified 14 unique airline codes.
+  - All displayed airline codes follow a consistent two-character format.
+  - No NULL or empty airline code groups were displayed in the grouped results.
+
+**3. Delay Values**
+  - Minimum departure delay: -115 minutes.
+  - Maximum departure delay: 4,352 minutes.
+  - Minimum arrival delay: -128 minutes.
+  - Maximum arrival delay: 4,336 minutes.
+  - Negative departure delays: 4,017,675 records.
+  - Negative arrival delays: 4,176,073 records.
+  - Negative delay values represent flights departing or arriving earlier than scheduled and are considered valid operational values.
+
+**4. Cancellation and Diversion Flags**
+  - Cancellation flags contain only two values: 0 and 1.
+  - 0: 6,898,743 records (not cancelled).
+  - 1: 102,876 records (cancelled).
+  - Diversion flags contain only two values: 0 and 1.
+  - 0: 6,982,361 records (not diverted).
+  - 1: 19,258 records (diverted).
+  - No unexpected flag values or NULL groups were displayed.
+
+**5. Extreme Delay Values**
+  - 637 records had departure delays exceeding 24 hours (1,440 minutes).
+  - 643 records had arrival delays exceeding 24 hours.
+  - Extreme delays were concentrated among a small number of airlines, particularly AA, OH and OO.
+  - A total of 665 records had at least one departure or arrival delay exceeding 24 hours.
+  - Of these, 655 records involved flights that were neither cancelled nor diverted, 2 involved diverted flights, and 8 involved cancelled flights.
+  - Among the 655 non-cancelled and non-diverted flights:
+    - 615 records (93.9%) had both departure and arrival delays exceeding 24 hours.
+    - 12 records (1.8%) had only departure delays exceeding 24 hours.
+    - 28 records (4.3%) had only arrival delays exceeding 24 hours.
+  - All 10 cancelled or diverted records had missing actual arrival times.
+  - The extreme delay values require further investigation to determine whether they represent genuine operational disruptions or potential timestamp inconsistencies.
 
 **Action Taken:**
-- Reviewed unusual values to determine whether they were valid operational scenarios or potential data errors.
-- Retained negative delay values because they represent early departures or arrivals.
+- Verified the flight date range against the expected 2025 reporting period.
+- Reviewed airline codes and identified 14 unique airlines.
+- Confirmed that negative delay values represent early departures or arrivals and retained them.
+- Checked cancellation and diversion flags for unexpected values.
+- Identified and investigated records with departure or arrival delays exceeding 24 hours.
+- Compared extreme delay records across airlines and examined their relationship with cancellation and diversion status.
+- Flagged extreme delay records for further validation. No records were removed or modified at this stage.
 
-**Status:** Pending
+**Status:** Pending Further Investigation
 
 ---
 
